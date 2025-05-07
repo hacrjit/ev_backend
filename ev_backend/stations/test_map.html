@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Charging Stations Map</title>
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 90%;
+    }
+    .controls input, .controls button, .controls select {
+      padding: 6px;
+      font-size: 14px;
+      flex: 1 1 auto;
+    }
+    #midpointsContainer {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #midpointsContainer input {
+      width: 100%;
+    }
+    .marker-label {
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <input id="start" placeholder="Start location">
+    <input id="end" placeholder="End location">
+    <div id="midpointsContainer"></div>
+    <button onclick="addMidpoint()">Add Midpoint</button>
+    <input id="radius" placeholder="Radius (meters)" value="10000">
+    <button onclick="showRouteStations()">Show Route Stations</button>
+    <button onclick="findNearbyStations()">Nearby Stations</button>
+    <select id="routeSelector" onchange="selectRoute(this.value)"></select>
+  </div>
+  <div id="map"></div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsXGPIj4sbQujFXjNj0ojFwzij9ofBBkA&libraries=places"></script>
+  <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+
+  <script>
+    let map, geocoder, markerCluster, currentMarkers = [], routesData = [];
+    let directionsRenderers = [], startMarker, endMarker, isRouteActive = false;
+
+    async function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 20.5937, lng: 78.9629 },
+        zoom: 6,
+      });
+
+      geocoder = new google.maps.Geocoder();
+      new google.maps.places.Autocomplete(document.getElementById("start"));
+      new google.maps.places.Autocomplete(document.getElementById("end"));
+
+      map.addListener("idle", fetchStationsInViewport);
+      await fetchStationsInViewport();
+    }
+
+    function addMidpoint() {
+      const container = document.getElementById("midpointsContainer");
+      const input = document.createElement("input");
+      input.placeholder = "Midpoint";
+      new google.maps.places.Autocomplete(input);
+      container.appendChild(input);
+    }
+
+    async function showRouteStations() {
+      isRouteActive = true;
+      const start = document.getElementById("start").value.trim();
+      const end = document.getElementById("end").value.trim();
+      const midpoints = Array.from(document.querySelectorAll('#midpointsContainer input'))
+                        .map(input => input.value.trim())
+                        .filter(value => value !== '');
+      const radius = parseInt(document.getElementById("radius").value || "10000");
+
+      if (!start || !end) return alert("Please enter start and end locations.");
+
+      try {
+        await getRoutePath(start, end, midpoints);
+      } catch (err) {
+        console.error("Route error:", err);
+        alert("Failed to get route or stations.");
+      }
+    }
+
+    async function getRoutePath(start, end, midpoints) {
+      const directionsService = new google.maps.DirectionsService();
+
+      directionsRenderers.forEach(renderer => renderer.setMap(null));
+      directionsRenderers = [];
+      if(startMarker) startMarker.setMap(null);
+      if(endMarker) endMarker.setMap(null);
+
+      return new Promise((resolve, reject) => {
+        directionsService.route({
+          origin: start,
+          destination: end,
+          waypoints: midpoints.map(mp => ({ location: mp, stopover: true })),
+          travelMode: google.maps.TravelMode.DRIVING,
+          provideRouteAlternatives: true
+        }, (res, status) => {
+          if (status !== "OK") return reject(`Directions failed: ${status}`);
+
+          routesData = res.routes;
+
+          // Get actual start and end points from first route
+          const firstRoute = res.routes[0];
+          const actualStart = firstRoute.legs[0].start_location;
+          const actualEnd = firstRoute.legs[firstRoute.legs.length - 1].end_location;
+
+          // Create start marker
+          startMarker = new google.maps.Marker({
+            position: actualStart,
+            map,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: "#00FF00",
+              fillOpacity: 1,
+              strokeWeight: 2
+            },
+            title: "Start Point",
+            label: {
+              text: "S",
+              className: "marker-label"
+            }
+          });
+
+          // Create end marker
+          endMarker = new google.maps.Marker({
+            position: actualEnd,
+            map,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: "#FF0000",
+              fillOpacity: 1,
+              strokeWeight: 2
+            },
+            title: "End Point",
+            label: {
+              text: "E",
+              className: "marker-label"
+            }
+          });
+
+          // Render all routes
+          res.routes.forEach((route, index) => {
+            const renderer = new google.maps.DirectionsRenderer({
+              map: map,
+              directions: res,
+              routeIndex: index,
+              suppressMarkers: true,
+              polylineOptions: {
+                strokeColor: getColorForIndex(index),
+                strokeWeight: 4,
+                zIndex: 1
+              }
+            });
+            directionsRenderers.push(renderer);
+          });
+
+          // Highlight first route
+          if (directionsRenderers[0]) {
+            directionsRenderers[0].setOptions({
+              polylineOptions: { strokeWeight: 6, zIndex: 2 }
+            });
+          }
+
+          populateRouteSelector(res.routes);
+          selectRoute(0);
+          resolve();
+        });
+      });
+    }
+
+    function getColorForIndex(index) {
+      const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFA500', '#800080'];
+      return colors[index % colors.length];
+    }
+
+    function populateRouteSelector(routes) {
+      const selector = document.getElementById("routeSelector");
+      selector.innerHTML = "";
+      routes.forEach((r, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `Route ${i + 1} (${r.legs[0].duration.text})`;
+        selector.appendChild(opt);
+      });
+    }
+
+    function selectRoute(index) {
+      directionsRenderers.forEach((renderer, i) => {
+        const isSelected = i === parseInt(index);
+        renderer.setOptions({
+          polylineOptions: {
+            strokeColor: getColorForIndex(i),
+            strokeWeight: isSelected ? 6 : 4,
+            zIndex: isSelected ? 1000 : 1
+          }
+        });
+      });
+
+      const selectedRoute = routesData[index];
+      const overviewPath = selectedRoute.overview_path.map(p => ({ lat: p.lat(), lng: p.lng() }));
+      fetchStationsForRoute(overviewPath);
+    }
+
+    function fetchStationsForRoute(routePath) {
+      const radius = parseInt(document.getElementById("radius").value || "10000");
+      fetch("http://127.0.0.1:8000/api/stations/route/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ route: routePath, radius })
+      })
+      .then(res => res.json())
+      .then(stations => renderMarkers(stations))
+      .catch(err => console.error("Failed to fetch route stations:", err));
+    }
+
+    async function fetchStationsInViewport() {
+      if (isRouteActive) return; // Skip if route search is active
+      const bounds = map.getBounds();
+      if (!bounds) return;
+
+      const ne = bounds.getNorthEast();
+      const sw = bounds.getSouthWest();
+
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/api/stations/viewport/?bbox=${ne.lat()},${ne.lng()},${sw.lat()},${sw.lng()}`);
+        const stations = await res.json();
+        renderMarkers(stations);
+      } catch (err) {
+        console.error("Failed to fetch stations:", err);
+      }
+    }
+
+    function renderMarkers(stations) {
+      clearMarkers();
+      const markers = stations.map(station =>
+        new google.maps.Marker({
+          position: { lat: station.latitude, lng: station.longitude },
+          map,
+          title: station.name
+        })
+      );
+
+      markerCluster = new markerClusterer.MarkerClusterer({ map, markers });
+      currentMarkers = markers;
+    }
+
+    function clearMarkers() {
+      currentMarkers.forEach(marker => marker.setMap(null));
+      currentMarkers = [];
+      if (markerCluster) markerCluster.clearMarkers();
+    }
+
+    async function findNearbyStations() {
+      isRouteActive = false; // Reset route flag
+      if (!navigator.geolocation) return alert("Geolocation not supported.");
+
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const { latitude, longitude } = pos.coords;
+        map.setCenter({ lat: latitude, lng: longitude });
+        map.setZoom(13);
+
+        new google.maps.Marker({
+          position: { lat: latitude, lng: longitude },
+          map,
+          title: "Your Location"
+        });
+
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/api/stations/nearby/?lat=${latitude}&lng=${longitude}&radius=5000`);
+          const stations = await res.json();
+          renderMarkers(stations);
+        } catch (err) {
+          console.error("Failed to fetch nearby stations:", err);
+        }
+      });
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>

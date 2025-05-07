@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Route Charging Stations with User Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+    #inputs {
+      padding: 10px;
+      background: #f0f0f0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+    input, select, button {
+      padding: 8px;
+      font-size: 14px;
+      width: 250px;
+    }
+    button {
+      cursor: pointer;
+    }
+    #map {
+      height: 65vh;
+      width: 100%;
+    }
+    #station-list {
+      padding: 10px;
+      max-height: 25vh;
+      overflow-y: auto;
+      background: #fff;
+      border-top: 1px solid #ccc;
+    }
+    #station-items li {
+      list-style: none;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div id="inputs">
+    <input id="origin-input" type="text" placeholder="Detecting your location..." />
+    <input id="destination-input" type="text" placeholder="Enter destination" />
+    <button onclick="handleSearch()">Search Route</button>
+    <select id="route-select" onchange="onRouteChange()">
+      <option value="">Select a route</option>
+    </select>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="station-list">
+    <h3>Charging Stations Along Route</h3>
+    <ul id="station-items"></ul>
+  </div>
+
+  <script>
+    let map, directionsService, directionsRenderer;
+    let originAutocomplete, destinationAutocomplete;
+    let userLatLng = null;
+    let allRoutes = [];
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 28.6139, lng: 77.2090 }, // Default: Delhi
+        zoom: 7,
+      });
+
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({ map });
+
+      originAutocomplete = new google.maps.places.Autocomplete(document.getElementById("origin-input"));
+      destinationAutocomplete = new google.maps.places.Autocomplete(document.getElementById("destination-input"));
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLatLng = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: userLatLng }, (results, status) => {
+              if (status === "OK" && results[0]) {
+                document.getElementById("origin-input").value = results[0].formatted_address;
+              }
+            });
+
+            map.setCenter(userLatLng);
+            map.setZoom(12);
+          },
+          () => {
+            alert("Location access denied. Enter origin manually.");
+          }
+        );
+      }
+    }
+
+    function getRouteLatLngPoints(path) {
+      return path.map((latLng) => ({
+        lat: latLng.lat(),
+        lon: latLng.lng(),
+      }));
+    }
+
+    function drawBufferZones(routePoints, radiusKm) {
+      const radiusMeters = radiusKm * 1000;
+      routePoints.forEach((point) => {
+        new google.maps.Circle({
+          strokeColor: "#00BFFF",
+          strokeOpacity: 0.3,
+          strokeWeight: 1,
+          fillColor: "#00BFFF",
+          fillOpacity: 0.1,
+          map: map,
+          center: { lat: point.lat, lng: point.lon },
+          radius: radiusMeters,
+        });
+      });
+    }
+
+    async function fetchStationsAlongRoute(routePoints) {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/stations/route/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            route: routePoints,
+            radius: 10,
+            step_km: 5,
+            max_direct_distance: 10,
+          }),
+        });
+        return await response.json();
+      } catch (err) {
+        console.error("Error fetching stations:", err);
+        return [];
+      }
+    }
+
+    function showChargingStations(stations) {
+      stations.forEach((station) => {
+        const position = { lat: station.latitude, lng: station.longitude };
+        const marker = new google.maps.Marker({
+          position,
+          map,
+          icon: {
+            url: "https://cdn-icons-png.flaticon.com/512/2972/2972459.png",
+            scaledSize: new google.maps.Size(30, 30),
+          },
+          title: station.name,
+        });
+
+        const infowindow = new google.maps.InfoWindow({
+          content: `
+            <div>
+              <b>${station.name}</b><br>
+              ${station.address}<br>
+              ₹${station.price_per_kwh} per kWh<br>
+              ${station.is_available ? "Available" : "Not Available"}<br>
+              ${station.open_time} - ${station.close_time}<br><br>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}" target="_blank">Navigate</a>
+            </div>
+          `,
+        });
+
+        marker.addListener("click", () => infowindow.open(map, marker));
+      });
+    }
+
+    function populateStationList(stations) {
+      const container = document.getElementById("station-items");
+      container.innerHTML = "";
+      stations.forEach((station) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <b>${station.name}</b> - ₹${station.price_per_kwh}/kWh
+          <br>${station.address}
+          <br>${station.open_time} - ${station.close_time}
+          <br>Status: ${station.is_available ? "Available" : "Not Available"}
+          <br><a href="https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}" target="_blank">Navigate</a>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    async function handleRouteSelection(index) {
+      const route = allRoutes[index];
+      directionsRenderer.setDirections({ routes: [route] });
+      const routePoints = getRouteLatLngPoints(route.overview_path);
+      drawBufferZones(routePoints, 10);
+      const stations = await fetchStationsAlongRoute(routePoints);
+      showChargingStations(stations);
+      populateStationList(stations);
+    }
+
+    function onRouteChange() {
+      const selectedIndex = parseInt(document.getElementById("route-select").value);
+      if (!isNaN(selectedIndex)) {
+        handleRouteSelection(selectedIndex);
+      }
+    }
+
+    function handleSearch() {
+      const origin = document.getElementById("origin-input").value;
+      const destination = document.getElementById("destination-input").value;
+
+      if (!origin || !destination) {
+        alert("Please enter both origin and destination.");
+        return;
+      }
+
+      directionsService.route(
+        {
+          origin,
+          destination,
+          travelMode: "DRIVING",
+          provideRouteAlternatives: true,
+        },
+        (response, status) => {
+          if (status === "OK") {
+            allRoutes = response.routes;
+            const routeSelect = document.getElementById("route-select");
+            routeSelect.innerHTML = "";
+            allRoutes.forEach((route, index) => {
+              const option = document.createElement("option");
+              option.value = index;
+              option.text = `Route ${index + 1}`;
+              routeSelect.appendChild(option);
+            });
+
+            handleRouteSelection(0); // Show first route by default
+          } else {
+            alert("Directions request failed: " + status);
+          }
+        }
+      );
+    }
+
+    window.initMap = initMap;
+  </script>
+
+  <!-- Google Maps API with Places -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsXGPIj4sbQujFXjNj0ojFwzij9ofBBkA&libraries=places&callback=initMap">
+  </script>
+</body>
+</html>

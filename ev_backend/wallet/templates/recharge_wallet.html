@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recharge Wallet</title>
+</head>
+<body>
+
+    <h1>Recharge Wallet</h1>
+
+    <input type="number" id="amount" placeholder="Enter amount" min="1">
+    <button id="pay-button">Pay Now</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(';');
+            for (let i = 0; i < cookieArr.length; i++) {
+                let cookiePair = cookieArr[i].trim();
+                if (cookiePair.startsWith(name + '=')) {
+                    return cookiePair.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
+
+        document.getElementById("pay-button").onclick = function () {
+            const amount = document.getElementById("amount").value;
+
+            if (!amount || parseFloat(amount) <= 0) {
+                alert("Please enter a valid amount");
+                return;
+            }
+
+            fetch("/api/wallet/create-payment/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getCookie("access_token"),
+                },
+                body: JSON.stringify({ amount: amount }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error creating order: " + data.error);
+                    return;
+                }
+
+                const options = {
+                    key: data.razorpay_key,
+                    amount: data.amount, // amount in the smallest currency unit
+                    currency: data.currency,
+                    order_id: data.order_id,
+                    handler: function (response) {
+                        fetch("/api/wallet/verify-payment/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + getCookie("access_token"),
+                            },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                            }),
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.transaction_id) {
+                                alert("Recharge successful! Transaction ID: " + data.transaction_id);
+                                window.location.reload();
+                            } else {
+                                alert("Payment verification failed: " + (data.error || "Unknown error"));
+                            }
+                        })
+                        .catch(err => {
+                            alert("Error verifying payment: " + err.message);
+                        });
+                    },
+                    prefill: {
+                        name: "Test User",
+                        email: "test@example.com",
+                        contact: "9999999999",
+                    },
+                    theme: {
+                        color: "#3399cc",
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(err => {
+                alert("Error creating order: " + err.message);
+            });
+        };
+    </script>
+
+</body>
+</html>

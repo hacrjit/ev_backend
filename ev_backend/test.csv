@@ -1,0 +1,6 @@
+name,address,latitude,longitude,available_ports
+Station 1,Some Street,20.5937,78.9629,10
+Station 2,Another Street,28.7041,77.1025,8
+Station 3,Third Street,19.0760,72.8777,5
+Station 4,Fourth Street,13.0827,80.2707,12
+Station 5,Fifth Street,12.9716,77.5946,15   

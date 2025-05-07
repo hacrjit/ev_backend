@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EV Charging Directions</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"
+    />
+    <style>
+      #map {
+        height: 600px;
+      }
+      .route-info {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      }
+      .charging-popup b {
+        display: block;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <!-- <div class="route-info" id="routeInfo" style="display: none">
+      <div id="instructions"></div>
+      <button onclick="clearRoute()">Clear Route</button>
+    </div> -->
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script>
+      let map, userLocation, routingControl;
+      const chargingIcon = L.icon({
+        iconUrl:
+          //"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+          "https://cdn-icons-png.flaticon.com/128/4430/4430939.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+      });
+
+        const transparentIcon = L.icon({
+            iconUrl:
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+        });
+
+      // Initialize map with user location
+      function initMap() {
+        map = L.map("map");
+
+        // Set up base layer
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+          map
+        );
+
+        // Locate user immediately
+        map.locate({
+          setView: true,
+          maxZoom: 12,
+          enableHighAccuracy: true,
+        });
+
+        // Setup event handlers
+        map.on("locationfound", handleLocationFound);
+        map.on("locationerror", handleLocationError);
+      }
+
+      function handleLocationFound(e) {
+        userLocation = e.latlng;
+
+        // Add pulsating user marker
+        L.marker(userLocation, {
+          icon: L.divIcon({
+            className: "pulsing-icon",
+            iconSize: [20, 20],
+            html: '<div class="pulse"></div>',
+          }),
+        })
+          .addTo(map)
+          .bindPopup("Your Current Location")
+          .openPopup();
+
+        // Load nearby stations
+        loadChargingStations(userLocation.lat, userLocation.lng);
+      }
+
+      function handleLocationError(e) {
+        alert("Location access denied - using default location");
+        userLocation = L.latLng(28.6139, 77.209); // Delhi coordinates
+        map.setView(userLocation, 12);
+        loadChargingStations(userLocation.lat, userLocation.lng);
+      }
+
+      function showRoute(stationCoords) {
+        if (routingControl) map.removeControl(routingControl);
+
+        routingControl = L.Routing.control({
+          waypoints: [
+            userLocation,
+            L.latLng(stationCoords.lat, stationCoords.lng),
+          ],
+          routeWhileDragging: true,
+          showAlternatives: false,
+          lineOptions: { styles: [{ color: "#3388ff", weight: 5 }] },
+          createMarker: (i, wp) =>
+            i === 0
+              ? L.marker(wp.latLng, { icon: transparentIcon })
+              : L.marker(wp.latLng, { icon: chargingIcon }),
+          formatter: new L.Routing.Formatter({ units: "metric" }),
+        }).addTo(map);
+
+        // Show route instructions
+        document.getElementById("routeInfo").style.display = "block";
+        routingControl.on("routesfound", (e) => {
+          const route = e.routes[0];
+          document.getElementById("instructions").innerHTML = `Distance: ${(
+            route.summary.totalDistance / 1000
+          ).toFixed(1)} km<br>
+                     Duration: ${Math.round(
+                       route.summary.totalTime / 60
+                     )} mins<br>
+                     ${route.instructions.map((i) => i.text).join("<br>")}`;
+        });
+      }
+
+      function clearRoute() {
+        if (routingControl) {
+          map.removeControl(routingControl);
+          routingControl = null;
+        }
+        document.getElementById("routeInfo").style.display = "none";
+      }
+
+      async function loadChargingStations(lat, lon) {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/stations/nearby/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ lat: lat, lon: lon, radius: 500 }),
+          });
+      
+          const stations = await response.json();
+      
+          stations.forEach((station) => {
+            const popupContent = `
+              <div class="charging-popup">
+                  <b>${station.name}</b>
+                  ${station.address}<br>
+                  Price per kWh: ₹${station.price_per_kwh}<br>
+                  Available: ${station.is_available ? "Yes" : "No"}<br>
+                  Open Time: ${station.open_time}<br>
+                  Close Time: ${station.close_time}<br>
+                  <a class="map-link google" 
+                     href="https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${station.latitude},${station.longitude}" 
+                     target="_blank">Open in Google Maps</a><br>
+                  <a class="map-link apple" 
+                     href="https://maps.apple.com/?daddr=${station.latitude},${station.longitude}&dirflg=d" 
+                     target="_blank">Open in Apple Maps</a><br>
+                  <button onclick="showRoute({lat: ${station.latitude}, lng: ${station.longitude}})">
+                      Get Directions
+                  </button>
+              </div>
+            `;
+      
+            L.marker([station.latitude, station.longitude], { icon: chargingIcon })
+              .addTo(map)
+              .bindPopup(popupContent);
+          });
+        } catch (error) {
+          console.error("Failed to load stations:", error);
+        }
+      }
+      
+      // Initialize when ready
+      document.addEventListener("DOMContentLoaded", initMap);
+    </script>
+
+    <style>
+      .pulsing-icon .pulse {
+        width: 20px;
+        height: 20px;
+        background: #007bff;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.8);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+    </style>
+  </body>
+</html>
+
+KA51HR0149
