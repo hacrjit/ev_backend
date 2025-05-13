@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Route Planner</title>
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+    #directions-panel {
+      height: 300px;
+      overflow-y: scroll;
+      background-color: #f1f1f1;
+      padding: 10px;
+    }
+    #waypoint-input {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 5;
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #add-waypoint {
+      position: absolute;
+      top: 10px;
+      left: 320px;
+      z-index: 5;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsXGPIj4sbQujFXjNj0ojFwzij9ofBBkA&libraries=places&callback=initMap" async defer></script>
+</head>
+<body>
+  <h1>Route Planner</h1>
+  <input id="waypoint-input" type="text" placeholder="Search for a location...">
+  <button id="add-waypoint">Add Waypoint</button>
+  <div id="map"></div>
+  <div id="directions-panel"></div>
+
+  <script>
+    let map, directionsService, directionsRenderer;
+    let waypoints = [];
+    let markers = [];
+    let autocomplete;
+
+    // Initialize the map and directions service
+    function initMap() {
+      // Create a map centered at a location
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 37.7749, lng: -122.4194 }, // San Francisco
+        zoom: 12
+      });
+
+      // Create a DirectionsService and DirectionsRenderer to show the route
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        panel: document.getElementById('directions-panel')
+      });
+
+      // Add autocomplete functionality to the search input
+      const input = document.getElementById('waypoint-input');
+      autocomplete = new google.maps.places.Autocomplete(input);
+      autocomplete.bindTo('bounds', map);
+
+      // Event listener to add the selected location as a waypoint
+      autocomplete.addListener('place_changed', function() {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          const location = place.geometry.location;
+          addWaypoint(location, place.name);
+        }
+      });
+
+      // Add event listener to add waypoint on button click
+      document.getElementById('add-waypoint').addEventListener('click', function() {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          const location = place.geometry.location;
+          addWaypoint(location, place.name);
+        }
+      });
+    }
+
+    // Add waypoint to the list and update the route
+    function addWaypoint(location, name) {
+      // Add marker for the new waypoint
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: name
+      });
+
+      markers.push(marker);
+
+      // Add waypoint to the route list
+      waypoints.push({
+        location: location,
+        stopover: true
+      });
+
+      // Update the route whenever a new waypoint is added
+      if (waypoints.length > 1) {
+        updateRoute();
+      }
+    }
+
+    // Update the route with the waypoints and get the optimized path
+    function updateRoute() {
+      const origin = waypoints[0].location;
+      const destination = waypoints[waypoints.length - 1].location;
+
+      // Request route with waypoints optimization
+      directionsService.route({
+        origin: origin,
+        destination: destination,
+        waypoints: waypoints.slice(1, -1), // Exclude start and end from waypoints
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true // Optimize waypoints to minimize travel time or distance
+      }, function(response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(response);
+        } else {
+          alert('Directions request failed due to ' + status);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

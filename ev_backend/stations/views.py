@@ -10,10 +10,13 @@ from django.contrib.gis.geos import Point, Polygon
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 from rest_framework.views import APIView
-from django.contrib.gis.geos import LineString
+from django.contrib.gis.geos import LineString, GEOSGeometry
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.contrib.gis.db.models.functions import Distance as GeoDistance
+import polyline
+import requests
+from geopy.distance import geodesic
 
 class ChargingStationViewSet(viewsets.ModelViewSet):
     queryset = ChargingStation.objects.all()
@@ -260,6 +263,63 @@ class RouteStations(APIView):
 
             serializer = ChargingStationSerializer(stations, many=True)
             return Response(serializer.data)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+        
+
+
+class SmartRouteView(APIView):
+    def post(self, request):
+        polyline_str = request.data.get('polyline')
+        range_m = int(request.data.get('range', 10000))  # 10 km default
+
+        if not polyline_str:
+            return Response({'error': 'Polyline is required'}, status=400)
+
+        try:
+            # Decode polyline into (lat, lng)
+            coords = polyline.decode(polyline_str)
+
+            # Convert to LineString (lng, lat) as per GeoDjango convention
+            route_line = LineString([(lng, lat) for lat, lng in coords], srid=4326)
+            route_line_geo = GEOSGeometry(route_line.wkt, srid=4326)
+            route_line_geo.geography = True
+
+            # Query for stations within 'range_m' meters from route
+            nearby_stations = ChargingStation.objects.filter(
+                location__dwithin=(route_line_geo, D(m=range_m))
+            ).annotate(distance=Distance('location', route_line_geo)).order_by('distance')
+
+            station_serializer = ChargingStationSerializer(nearby_stations, many=True)
+
+            # Build updated route with waypoints (if stations found)
+            if nearby_stations.exists():
+                waypoints = '|'.join([
+                    f"{station.location.y},{station.location.x}"
+                    for station in nearby_stations[:10]
+                ])
+
+                origin = f"{coords[0][0]},{coords[0][1]}"
+                destination = f"{coords[-1][0]},{coords[-1][1]}"
+                api_key = "YOUR_GOOGLE_MAPS_API_KEY"  # Replace this with a valid key
+
+                directions_url = (
+                    f"https://maps.googleapis.com/maps/api/directions/json"
+                    f"?origin={origin}&destination={destination}"
+                    f"&waypoints={waypoints}"
+                    f"&key=AIzaSyDsXGPIj4sbQujFXjNj0ojFwzij9ofBBkA"
+                )
+
+                response = requests.get(directions_url)
+                updated_route = response.json()
+            else:
+                updated_route = {"status": "NO_STATIONS_FOUND"}
+
+            return Response({
+                "updated_route": updated_route,
+                "charging_stations": station_serializer.data
+            })
 
         except Exception as e:
             return Response({'error': str(e)}, status=400)

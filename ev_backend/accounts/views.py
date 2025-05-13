@@ -30,7 +30,7 @@ class RegisterView(APIView):
 
             user.save()
             send_otp_email(user.email, otp)
-            return Response({"msg": "User created. OTP sent to email."}, status=status.HTTP_201_CREATED)
+            return Response({"msg": "User created. OTP sent to email.","otp":otp}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -177,7 +177,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     
 class CustomTokenRefreshView(APIView):
     def post(self, request, *args, **kwargs):
-        refresh_token = request.COOKIES.get('refresh_token')
+        refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh')
 
         if not refresh_token:
             return Response({"error": "Refresh token missing in cookies"}, status=status.HTTP_400_BAD_REQUEST)
