@@ -1,1 +1,1 @@
-web: gunicorn EV_BACKEND.wsgi
+web: gunicorn ev_backend.wsgi
