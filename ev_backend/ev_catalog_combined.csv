@@ -1,0 +1,160 @@
+Brand,Model Name,Vehicle Type,Battery Capacity (kWh),Range per Charge (km),Charging Time,Connector Type,Charging Port Location,Fast Charging Support,DC Charging Compatibility,Price Range (Ex-showroom),Launch Year,Availability
+Tata,Tiago EV,Hatchback,24.0,315,"3.6H (7.2 kW AC), 58 Min (25 kW DC)",CCS-II,Front,Yes,Yes,₹8.69L – ₹11.99L,2022,Available
+Tata,Tigor EV,Sedan,26.0,315,"9H 24Min (3.3 kW AC), 59 Min (18 kW DC)",CCS-II,Front,Yes,Yes,₹12.49L – ₹13.75L,2021,Available
+Tata,Nexon EV,SUV,46.08,489,"6H 36Min (7.2 kW AC), 40 Min (60 kW DC)",CCS-II,Front,Yes,Yes,₹14.49L – ₹19.49L,2020,Available
+Tata,Punch EV (25 kWh),SUV,25.0,315,"3.6H (3.3 kW AC), 56 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹9.99L – ₹13.79L,2024,Available
+Tata,Punch EV (35 kWh),SUV,35.0,421,"5H (7.2 kW AC), 56 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹12.69L – ₹13.79L,2024,Available
+Tata,Curvv EV,SUV,55.0,585,"7.9H (7.2 kW AC), 40 Min (70 kW DC)",CCS-II,Front,Yes,Yes,₹17.49L – ₹21.99L,2025,Upcoming
+Mahindra,XUV400 EC Pro,SUV,34.5,359.0,"13H (3.3 kW AC), 50 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹15.49L – ₹16.49L,2023,Available
+Mahindra,XUV400 EL Pro 34.5 kWh,SUV,34.5,359.0,"6H 30Min (7.2 kW AC), 50 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹16.94L,2023,Available
+Mahindra,XUV400 EL Pro 39.4 kWh,SUV,39.4,456.0,"6H 30Min (7.2 kW AC), 50 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹17.49L – ₹17.69L,2023,Available
+Mahindra,XEV 9e,SUV,79.0,656.0,"8H (11.2 kW AC), 20 Min (180 kW DC)",CCS-II,Front,Yes,Yes,₹21.9L – ₹30.5L,2024,Available
+Mahindra,BE 6,SUV,79.0,683.0,"8H (11.2 kW AC), 20 Min (180 kW DC)",CCS-II,Front,Yes,Yes,₹18.9L – ₹26.9L,2024,Available
+Mahindra,XEV 4e,SUV,,,,,,,,₹13L (Expected),2025,Upcoming
+MG,Comet EV Executive,Hatchback,17.3,230,7H (3.3 kW AC),Type 2,Front,No,No,₹7.00L,2023,Available
+MG,Comet EV Excite,Hatchback,17.3,230,7H (3.3 kW AC),Type 2,Front,No,No,₹8.20L,2023,Available
+MG,Comet EV Excite FC,Hatchback,17.3,230,3.5H (7.4 kW AC),Type 2,Front,Yes,No,₹8.73L,2023,Available
+MG,Comet EV Exclusive,Hatchback,17.3,230,7H (3.3 kW AC),Type 2,Front,No,No,₹9.26L,2023,Available
+MG,Comet EV Exclusive FC,Hatchback,17.3,230,3.5H (7.4 kW AC),Type 2,Front,Yes,No,₹9.68L,2023,Available
+MG,Comet EV 100YR Edition,Hatchback,17.3,230,7H (3.3 kW AC),Type 2,Front,No,No,₹9.84L,2023,Available
+MG,ZS EV Executive,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹20.11L,2023,Available
+MG,ZS EV Excite Pro,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹21.68L,2023,Available
+MG,ZS EV Exclusive Plus Dark Grey,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹26.56L,2023,Available
+MG,ZS EV Exclusive Plus Dual Tone Iconic Ivory,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹26.77L,2023,Available
+MG,ZS EV 100-Year Edition,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹26.77L,2023,Available
+MG,ZS EV Essence Dark Grey,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹27.91L,2023,Available
+MG,ZS EV Essence Dual Tone Iconic Ivory,SUV,50.3,461,"9H (7.4 kW AC), 60 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹28.12L,2023,Available
+Hyundai,Kona Electric,SUV,39.2,452.0,"6H 10Min (7.2 kW AC), 57 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹23.84L – ₹24.03L,2019,Available
+Hyundai,IONIQ 5,SUV,72.6,631.0,"6H 55Min (11 kW AC), 18 Min (350 kW DC)",CCS-I,Front,Yes,Yes,₹46.30L,2023,Available
+Hyundai,Creta EV,SUV,,,,,Front,Yes,Yes,₹15.00L – ₹20.00L (Expected),2025,Upcoming
+Hyundai,Venue EV,Compact SUV,,,,,Front,Yes,Yes,₹12.00L – ₹15.00L (Expected),2026,Upcoming
+Hyundai,IONIQ 6,Sedan,77.4,614.0,"7H 10Min (11 kW AC), 18 Min (350 kW DC)",CCS-II,Front,Yes,Yes,₹50.00L – ₹55.00L (Expected),2025,Upcoming
+Hyundai,IONIQ 7,SUV,100.0,483.0,"8H (11 kW AC), 20 Min (350 kW DC)",CCS-II,Front,Yes,Yes,₹60.00L – ₹70.00L (Expected),2026,Upcoming
+Kia,EV6,Crossover,77.4,528,"7H (11 kW AC), 18 Min (350 kW DC)",CCS-II,Front,Yes,Yes,₹59.95L – ₹64.95L,2022,Available
+Kia,EV9,SUV,99.8,561,"9H 5Min (11 kW AC), 24 Min (350 kW DC)",CCS-II,Front,Yes,Yes,₹1.30Cr,2024,Available
+Kia,EV5,SUV,,,,,,Yes,Yes,₹30.00L – ₹45.00L (Expected),2025,Upcoming
+Kia,EV2,Compact SUV,58.3,599,"NA (AC), 31 Min (DC)",CCS-II,Front,Yes,Yes,₹30.00L (Expected),2024,Upcoming
+Kia,EV3,Compact SUV,81.4,600,"NA (AC), 31 Min (DC)",CCS-II,Front,Yes,Yes,₹30.00L (Expected),2025,Upcoming
+BYD,e6,MPV,71.7,"415","12H (6.6 kW AC), 90 Min (DC)",CCS-II,Front,Yes,Yes,₹29.15L – ₹29.60L,2021,Available
+BYD,Atto 3 (Dynamic),SUV,49.92,468,"8H (AC), 50 Min (DC)",CCS-II,Front,Yes,Yes,₹24.99L,2024,Available
+BYD,Atto 3 (Premium/Superior),SUV,60.48,521,"10H (AC), 50 Min (DC)",CCS-II,Front,Yes,Yes,₹29.85L – ₹33.99L,2024,Available
+BYD,Seal (Dynamic),Sedan,61.44,510,"8.6H (11 kW AC), 37 Min (150 kW DC)",CCS-II,Front,Yes,Yes,₹41.00L,2024,Available
+BYD,Seal (Premium),Sedan,82.56,650,"8.6H (11 kW AC), 37 Min (150 kW DC)",CCS-II,Front,Yes,Yes,₹45.55L,2024,Available
+BYD,Seal (Performance AWD),Sedan,82.56,580,"8.6H (11 kW AC), 37 Min (150 kW DC)",CCS-II,Front,Yes,Yes,₹53.00L,2024,Available
+BYD,eMax 7,MPV,,420,,,Front,Yes,Yes,₹26.50L – ₹29.50L,2024,Available
+Citroën,eC3,Hatchback,29.2,320,"10.5H (3.3 kW AC), 57 Min (25 kW DC)",CCS-II,Front Right Fender,Yes,Yes,₹11.50L – ₹13.41L,2023,Available
+BMW,i4 eDrive40,Sedan,83.9,590,"8.25H (11 kW AC), 31 Min (205 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹72.50L – ₹77.50L,2022,Available
+BMW,iX xDrive50,SUV,111.5,575,"5.5H (22 kW AC), 35 Min (195 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹1.40Cr,2021,Available
+BMW,i7 xDrive60,Sedan,101.7,625,"52H (230V AC), 50 Min (150 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.03Cr – ₹2.50Cr,2023,Available
+BMW,iX1 xDrive30,SUV,66.5,440,"6.5H (11 kW AC), 29 Min (130 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹66.90L,2023,Available
+BMW,i5 eDrive40,Sedan,83.9,516,"4.25H (22 kW AC), 30 Min (205 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹1.20Cr,2024,Available
+BMW,CE 04,Scooter,8.9,130,"4.5H (2.3 kW AC), 1.5H (6.9 kW AC)",Type 2,Right Side,Yes,No,₹15.25L,2024,Available
+Mercedes-Benz,EQS 580 4MATIC,Sedan,107.8,857,"31 Min (10–80% DC), ~11H (AC)",CCS-II,Front Left Fender,Yes,Yes,₹1.55Cr,2022,Available
+Mercedes-Benz,EQS 450 4MATIC SUV,SUV,122.0,809,"31 Min (10–80% DC), ~12H (AC)",CCS-II,Front Left Fender,Yes,Yes,₹1.28Cr,2025,Available
+Mercedes-Benz,EQB 350 4MATIC,SUV,66.5,447,"32 Min (10–80% DC), 6.5H (11 kW AC)",CCS-II,Front Left Fender,Yes,Yes,₹74.50L,2022,Available
+Mercedes-Benz,EQE 500 4MATIC SUV,SUV,90.56,550,"28 Min (10–80% DC), ~9.5H (11 kW AC)",CCS-II,Front Left Fender,Yes,Yes,₹1.39Cr,2023,Available
+Mercedes-Benz,G 580 with EQ Technology,SUV,116.0,473,"32 Min (10–80% DC), ~11.7H (11 kW AC)",CCS-II,Front Left Fender,Yes,Yes,₹3.00Cr,2025,Available
+Rolls-Royce,Spectre,Coupe,102,530,"34 Min (10–80% at 195 kW DC), 95 Min (10–80% at 50 kW DC), ~11H (AC)",CCS-II,Right Rear,Yes,Yes,₹7.50 Cr,2024,Available
+Porsche,Taycan 4S,Sedan,93.4,705,"9H (11 kW AC), 33 Min (150 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹1.89 Cr,2024,Available
+Porsche,Taycan 4S Plus,Sedan,93.4,565,"10.5H (11 kW AC), 18 Min (240 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.10 Cr,2024,Available
+Porsche,Taycan Turbo,Sedan,93.4,400,"9H (11 kW AC), 17 Min (216 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.50 Cr,2023,Available
+Porsche,Taycan Turbo S,Sedan,93.4,400,"9H (11 kW AC), 17 Min (216 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.80 Cr,2023,Available
+Porsche,Taycan Cross Turismo,SUV,93.4,510,"10.5H (11 kW AC), 18 Min (240 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.30 Cr,2024,Available
+Porsche,Taycan Cross Turismo 4S,SUV,93.4,490,"9H (11 kW AC), 19 Min (195 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.60 Cr,2024,Available
+Porsche,Taycan Cross Turismo Turbo,SUV,93.4,400,"9H (11 kW AC), 17 Min (216 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹2.90 Cr,2023,Available
+Porsche,Taycan Cross Turismo Turbo S,SUV,93.4,400,"9H (11 kW AC), 17 Min (216 kW DC)",CCS-II,Front Left Fender,Yes,Yes,₹3.20 Cr,2023,Available
+Vayve Mobility,Eva Nova,Quadricycle,9.0,125,"5H–10H (AC), 15 Min (DC 10–70%)",CCS-II,Front Left Fender,Yes,Yes,"₹3.25L (Battery Subscription: ₹2/km), ₹3.99L (Battery Purchase)",2026,Upcoming
+Vayve Mobility,Eva Stella,Quadricycle,12.6,175,"5H–10H (AC), 15 Min (DC 10–70%)",CCS-II,Front Left Fender,Yes,Yes,"₹3.99L (Battery Subscription: ₹2/km), ₹4.99L (Battery Purchase)",2026,Upcoming
+Vayve Mobility,Eva Vega,Quadricycle,18.0,250,"5H–10H (AC), 15 Min (DC 10–70%)",CCS-II,Front Left Fender,Yes,Yes,"₹4.49L (Battery Subscription: ₹2/km), ₹5.99L (Battery Purchase)",2026,Upcoming
+Tesla,Model 3 Standard Range,Sedan,60,405,"6h15m (11 kW AC), 25 min (170 kW DC)",CCS-II,Left Side - Rear,Yes,Yes,₹70L–₹90L,2025,Upcoming
+Tesla,Model 3 Long Range,Sedan,60,580,"6h15m (11 kW AC), 25 min (170 kW DC)",CCS-II,Left Side - Rear,Yes,Yes,₹90L–₹1.10Cr,2025,Upcoming
+Tesla,Model S,Sedan,100,650,"~10h (11 kW AC), ~40 min (250 kW DC)",CCS-II,Left Side - Rear,Yes,Yes,₹70L–₹1Cr,2026,Upcoming
+Tesla,Model X,SUV,95,580,"~10h (11 kW AC), ~30 min (250 kW DC)",CCS-II,Left Side - Rear,Yes,Yes,₹70L–₹1Cr,2026,Upcoming
+Tesla,Model Y,SUV,60,350,"6h15m (11 kW AC), 24 min (170 kW DC)",CCS-II,Left Side - Rear,Yes,Yes,₹70L–₹90L,2025,Upcoming
+Ola Electric,S1 X (2 kWh),Scooter,2.0,108,5 hrs (AC),Proprietary,Left Side,No,No,"₹79,999",2024,Available
+Ola Electric,S1 X (3 kWh),Scooter,3.0,176,5 hrs (AC),Proprietary,Left Side,No,No,"₹89,999",2024,Available
+Ola Electric,S1 X (4 kWh),Scooter,4.0,242,5 hrs (AC),Proprietary,Left Side,No,No,"₹99,999",2024,Available
+Ola Electric,S1 X+,Scooter,4.0,190,5 hrs (AC),Proprietary,Left Side,No,No,"₹94,999",2024,Available
+Ola Electric,S1 Pro Gen 2,Scooter,4.0,195,"6.5 hrs (AC), 50% in 18 min (DC)",Proprietary,Left Side,Yes,Yes,"₹1,09,999",2024,Available
+Ola Electric,S1 Air (2 kWh),Scooter,2.0,85,5 hrs (AC),Proprietary,Left Side,No,No,"₹84,999",2024,Available
+Ola Electric,S1 Air (3 kWh),Scooter,3.0,125,5 hrs (AC),Proprietary,Left Side,No,No,"₹99,999",2024,Available
+Ola Electric,S1 Air (4 kWh),Scooter,4.0,165,5 hrs (AC),Proprietary,Left Side,No,No,"₹1,09,999",2024,Available
+Ola Electric,S1 Z,Scooter,3.0,146,5 hrs (AC),Proprietary,Left Side,No,No,"₹84,999",2024,Available
+Ola Electric,Electric Sedan,Sedan,,500,,CCS-II,Left Side,Yes,Yes,₹15L–₹25L,2026,Upcoming
+Ola Electric,Electric Hatchback,Hatchback,,500,,CCS-II,Left Side,Yes,Yes,₹10L–₹15L,2026,Upcoming
+Ola Electric,Electric SUV,SUV,,500,,CCS-II,Left Side,Yes,Yes,₹20L–₹30L,2026,Upcoming
+Ola Electric,Roadster X 2.5,Sports Bike,2.5,117,3.3 hrs (AC),Proprietary,Left Side,No,No,"₹74,999",2025,Available
+Ola Electric,Roadster X 3.5,Sports Bike,3.5,159,4.6 hrs (AC),Proprietary,Left Side,No,No,"₹84,999",2025,Available
+Ola Electric,Roadster X 4.5,Sports Bike,4.5,200,5.9 hrs (AC),Proprietary,Left Side,No,No,"₹94,999",2025,Available
+Ola Electric,Roadster X+ 4.5,Sports Bike,4.5,252,5.9 hrs (AC),Proprietary,Left Side,No,No,"₹1,04,999",2025,Available
+Ola Electric,Roadster X+ 9.1,Sports Bike,9.1,501,8 hrs (AC),Proprietary,Left Side,No,No,"₹1,54,999",2025,Available
+Ola Electric,Roadster Pro 8,Sports Bike,8.0,316,6 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,99,999",2025,Upcoming
+Ola Electric,Roadster Pro 16,Sports Bike,16.0,579,7.5 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹2,49,999",2025,Upcoming
+Ather Energy,450,Scooter,2.4,107,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,13,715",2018,Discontinued
+Ather Energy,450 Plus,Scooter,2.9,100,~5.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,41,225",2020,Discontinued
+Ather Energy,450X Gen 3,Scooter,2.9,111,8.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,40,599",2022,Discontinued
+Ather Energy,450X Gen 3,Scooter,3.7,150,5.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,54,999",2022,Discontinued
+Ather Energy,450X Gen 4,Scooter,2.9,126,8.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,40,599",2023,Available
+Ather Energy,450X Gen 4,Scooter,3.7,161,5.75 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,54,999",2023,Available
+Ather Energy,450S,Scooter,2.9,122,8.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,29,999",2023,Available
+Ather Energy,450 Apex,Scooter,3.7,157,5.5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,89,999",2024,Available
+Ather Energy,Rizta S,Scooter,2.9,123,~6 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,09,999",2024,Available
+Ather Energy,Rizta Z,Scooter,3.7,160,~6 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,24,999",2024,Available
+Ather Energy,340,Scooter,1.92,75,~4 hrs (AC),Proprietary,Left Side,No,No,"₹1,09,999",2018,Discontinued
+Hero Electric,Optima HX,Scooter,1.6,82,~4 hrs (AC),Proprietary,Left Side,No,No,"₹68,990",2020,Available
+Hero Electric,Optima LX,Scooter,1.8,85,~4 hrs (AC),Proprietary,Left Side,No,No,"₹74,990",2020,Available
+Hero Electric,Photon HX,Scooter,1.8,92,~4 hrs (AC),Proprietary,Left Side,No,No,"₹94,990",2020,Available
+Hero Electric,Photon LX,Scooter,2.0,108,~5 hrs (AC),Proprietary,Left Side,No,No,"₹1,04,990",2021,Available
+Hero Electric,NYX HX,Scooter,1.7,60,~4 hrs (AC),Proprietary,Left Side,No,No,"₹72,990",2021,Available
+Hero Electric,NYX LX,Scooter,2.0,70,~5 hrs (AC),Proprietary,Left Side,No,No,"₹1,04,990",2021,Available
+Hero Electric,Flash LX,Scooter,0.72,50,~4 hrs (AC),Proprietary,Left Side,No,No,"₹44,990",2020,Available
+Hero Electric,Flash HX,Scooter,0.72,50,~4 hrs (AC),Proprietary,Left Side,No,No,"₹54,990",2020,Available
+Hero Electric,Hero Electric Xtreme,Scooter,2.5,120,~6 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,19,990",2022,Upcoming
+Hero Electric,Hero Electric Xtreme Pro,Scooter,2.5,140,~6 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,39,990",2022,Upcoming
+Hero Electric,Hero Electric Flash Pro,Scooter,1.0,60,~3 hrs (AC),Proprietary,Left Side,No,No,"₹57,990",2023,Upcoming
+Hero Electric,Hero Electric Optima Plus,Scooter,1.8,85,~5 hrs (AC),Proprietary,Left Side,No,No,"₹74,990",2024,Available
+Okinawa Autotech,Praise,Scooter,2.0,88,~4 hrs (AC),Proprietary,Left Side,No,No,"₹71,000",2017,Discontinued
+Okinawa Autotech,Praise Pro,Scooter,3.0,110,~4 hrs (AC),Proprietary,Left Side,No,No,"₹79,000",2018,Available
+Okinawa Autotech,Lite,Scooter,0.72,50,~2 hrs (AC),Proprietary,Left Side,No,No,"₹44,990",2019,Available
+Okinawa Autotech,Ridge,Scooter,1.5,60,~3 hrs (AC),Proprietary,Left Side,No,No,"₹65,000",2020,Available
+Okinawa Autotech,Ridge Plus,Scooter,1.5,80,~3 hrs (AC),Proprietary,Left Side,No,No,"₹71,000",2020,Available
+Okinawa Autotech,OCube,Scooter,2.0,85,~4 hrs (AC),Proprietary,Left Side,No,No,"₹80,000",2021,Available
+Okinawa Autotech,OKHI-90,Scooter,3.6,140,~5 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,20,000",2022,Upcoming
+Okinawa Autotech,OKHI-90 Pro,Scooter,4.0,160,~5 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,35,000",2023,Upcoming
+Ampere Vehicles,Reo,Scooter,0.72,55,~4 hrs (AC),Proprietary,Left Side,No,No,"₹45,000",2017,Discontinued
+Ampere Vehicles,Reo Elite,Scooter,1.0,60,~5 hrs (AC),Proprietary,Left Side,No,No,"₹53,000",2019,Available
+Ampere Vehicles,Reo 80,Scooter,1.0,80,~4 hrs (AC),Proprietary,Left Side,No,No,"₹55,000",2020,Available
+Ampere Vehicles,Zeal,Scooter,1.8,75,~4.5 hrs (AC),Proprietary,Left Side,No,No,"₹65,000",2020,Available
+Ampere Vehicles,Zeal EX,Scooter,2.0,80,~5 hrs (AC),Proprietary,Left Side,No,No,"₹70,000",2021,Available
+Ampere Vehicles,Reo Plus,Scooter,1.0,55,~4 hrs (AC),Proprietary,Left Side,No,No,"₹49,000",2020,Available
+Ampere Vehicles,Ambier,Scooter,2.4,100,~6 hrs (AC),Proprietary,Left Side,Yes,No,"₹85,000",2022,Available
+Ampere Vehicles,Velociti,Scooter,2.0,75,~5 hrs (AC),Proprietary,Left Side,No,No,"₹60,000",2021,Available
+Ampere Vehicles,Velociti Pro,Scooter,2.8,100,~5.5 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹95,000",2023,Upcoming
+Ampere Vehicles,Magnus,Scooter,1.8,75,~6 hrs (AC),Proprietary,Left Side,No,No,"₹69,999",2020,Available
+Ampere Vehicles,Magnus Pro,Scooter,2.1,85,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹85,000",2021,Available
+Ampere Vehicles,NexusReo,Scooter,1.0,80,~4 hrs (AC),Proprietary,Left Side,No,No,"₹60,000",2022,Available
+Simple Energy,S1,Scooter,2.8,236,~4 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,09,999",2021,Available
+Simple Energy,S1 Pro,Scooter,4.8,212,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,44,999",2021,Available
+Simple Energy,One,Scooter,4.0,300,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,45,000",2024,Upcoming
+Simple Energy,One Plus,Scooter,5.2,400,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,65,000",2024,Upcoming
+Simple Energy,S2,Scooter,2.8,236,~4 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,09,999",2021,Available
+Simple Energy,S2 Pro,Scooter,4.8,212,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,44,999",2021,Available
+TVS Motor,XL100,Scooter,0.48,80,~6 hrs (AC),Proprietary,Left Side,No,No,"₹44,999",2020,Available
+TVS Motor,NTORQ 125,Scooter,2.7,100,~4 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,02,000",2018,Available
+TVS Motor,Apache RTR 200,Scooter,3.0,135,~4 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,25,000",2020,Available
+TVS Motor,TVS iQube,Scooter,3.0,75,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,08,000",2020,Available
+TVS Motor,TVS iQube S,Scooter,3.0,90,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,10,000",2022,Available
+TVS Motor,TVS iQube ST,Scooter,4.0,140,~6 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,28,000",2024,Upcoming
+TVS Motor,TVS Creon,Scooter,4.0,95,~3 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,20,000",2023,Upcoming
+TVS Motor,TVS Zeppelin,Scooter,4.0,200,~3.5 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,50,000",2025,Upcoming
+TVS Motor,TVS Fiero,Scooter,2.6,105,~5 hrs (AC),Proprietary,Left Side,Yes,No,"₹1,15,000",2023,Upcoming
+TVS Motor,TVS X,Scooter,4.2,140,~6 hrs (AC),Proprietary,Left Side,Yes,Yes,"₹1,45,000",2024,Upcoming
+TVS Motor,TVS Wego,Scooter,2.0,85,~5 hrs (AC),Proprietary,Left Side,No,No,"₹73,000",2018,Discontinued
+TVS Motor,TVS Jupiter,Scooter,2.6,100,~6 hrs (AC),Proprietary,Left Side,No,No,"₹70,000",2018,Discontinued
+Bajaj Auto,Chetak 3501,Scooter,3.5,153,~3 hrs (0–80%),Proprietary,Left Side,No,No,"₹1,34,052",2024,Available
+Bajaj Auto,Chetak 3502,Scooter,3.5,153,~3.25 hrs (0–80%),Proprietary,Left Side,No,No,"₹1,22,497",2024,Available
+Bajaj Auto,Chetak 3503,Scooter,3.5,151,~3.25 hrs (0–80%),Proprietary,Left Side,No,No,"₹1,09,504",2024,Available
+Bajaj Auto,Chetak 2903,Scooter,2.9,123,~4 hrs (0–80%),Proprietary,Left Side,No,No,"₹98,498",2024,Available
+Bajaj Auto,Chetak Urbane (Gen 1),Scooter,2.9,95,~5 hrs (0–100%),Proprietary,Left Side,No,No,"₹1,00,000",2020,Discontinued
+Bajaj Auto,Chetak Premium (Gen 1),Scooter,2.9,95,~5 hrs (0–100%),Proprietary,Left Side,No,No,"₹1,15,000",2020,Discontinued
+Bajaj Auto,Chetak 2901,Scooter,2.9,123,~4 hrs (0–80%),Proprietary,Left Side,No,No,"₹95,998",2025,Upcoming

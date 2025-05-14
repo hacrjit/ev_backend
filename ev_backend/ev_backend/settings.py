@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
 
 
 import dj_rest_auth.app_settings
@@ -54,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist', 
     'django.contrib.gis',
@@ -87,6 +87,7 @@ AUTHENTICATION_BACKENDS += [
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
+
 
 
 MIDDLEWARE = [
@@ -135,18 +136,27 @@ WSGI_APPLICATION = 'ev_backend.wsgi.application'
 
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'ev_db',
+#         'USER': 'ev_user',
+#         'PASSWORD': 'ev_password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'ev_db',
-        'USER': 'ev_user',
-        'PASSWORD': 'ev_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'postgres',
+        'USER': 'postgres.couyjuetuzrsccgbyyrv',
+        'PASSWORD': 'Qczy92k* av',
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+        'PORT': '6543',
     }
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
 # Password validation
@@ -184,7 +194,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -192,13 +202,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
-
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'accounts.authentication.CookieJWTAuthentication',                   # custom authentication class for cookie based auth
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'accounts.authentication.CookieJWTAuthentication',                   # custom authentication class for cookie based auth
+    # ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 
@@ -209,7 +219,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'user': '1000/hour',
         'anon': '1000/hour'
-    }
+    },
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 SIMPLE_JWT = {

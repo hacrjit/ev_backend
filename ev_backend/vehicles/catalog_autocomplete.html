@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Catalog Filter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .vehicle {
+      margin-bottom: 15px;
+    }
+    .vehicle h3 {
+      margin: 0 0 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Vehicle Catalog</h2>
+
+  <!-- Brand Input with Datalist -->
+  <label for="brandInput">Brand:</label>
+  <input list="brandList" id="brandInput" placeholder="Start typing brand...">
+  <datalist id="brandList"></datalist>
+
+  <!-- Model Input with Datalist -->
+  <label for="modelInput">Model:</label>
+  <input list="modelList" id="modelInput" placeholder="Start typing model..." disabled>
+  <datalist id="modelList"></datalist>
+
+  <!-- Vehicle Type Dropdown -->
+  <label for="typeSelect">Vehicle Type:</label>
+  <select id="typeSelect">
+    <option value="">-- Any Type --</option>
+    <option value="SUV">SUV</option>
+    <option value="Hatchback">Hatchback</option>
+    <option value="Sedan">Sedan</option>
+  </select>
+
+  <!-- Battery Capacity Dropdown -->
+  <label for="batterySelect">Battery Capacity (kWh):</label>
+  <select id="batterySelect">
+    <option value="">-- Any Capacity --</option>
+  </select>
+
+  <!-- Search Button -->
+  <button id="searchBtn">Search</button>
+
+  <!-- Results -->
+  <div id="results" class="result"></div>
+
+  <script>
+    const brandInput = document.getElementById('brandInput');
+    const brandList = document.getElementById('brandList');
+    const modelInput = document.getElementById('modelInput');
+    const modelList = document.getElementById('modelList');
+    const typeSelect = document.getElementById('typeSelect');
+    const batterySelect = document.getElementById('batterySelect');
+    const searchBtn = document.getElementById('searchBtn');
+    const resultsDiv = document.getElementById('results');
+
+    let fullCatalog = [];
+
+    // Fetch all paginated data
+    async function fetchAllCatalog() {
+      let url = 'http://127.0.0.1:8000/api/vehicles/catalog/';
+      let results = [];
+
+      while (url) {
+        const res = await fetch(url);
+        const data = await res.json();
+        results.push(...(data.results || []));
+        url = data.next;
+      }
+
+      return results;
+    }
+
+    // Initialize app
+    async function init() {
+      try {
+        fullCatalog = await fetchAllCatalog();
+
+        // Populate brand datalist
+        const brands = [...new Set(fullCatalog.map(item => item.brand))].sort();
+        brands.forEach(brand => {
+          const option = document.createElement('option');
+          option.value = brand;
+          brandList.appendChild(option);
+        });
+
+        // Populate battery dropdown
+        const batteries = [...new Set(fullCatalog.map(item => item.battery_capacity_kWh).filter(Boolean))].sort((a, b) => a - b);
+        batteries.forEach(cap => {
+          const option = document.createElement('option');
+          option.value = cap;
+          option.textContent = `${cap} kWh`;
+          batterySelect.appendChild(option);
+        });
+
+      } catch (err) {
+        resultsDiv.innerHTML = `<p style="color: red;">Error loading data: ${err.message}</p>`;
+      }
+    }
+
+    // On brand input, enable and filter model datalist
+    brandInput.addEventListener('input', () => {
+      const brand = brandInput.value;
+      modelList.innerHTML = '';
+      modelInput.value = '';
+      modelInput.disabled = true;
+
+      if (!brand) return;
+
+      const models = [...new Set(
+        fullCatalog
+          .filter(item => item.brand.toLowerCase() === brand.toLowerCase())
+          .map(item => item.model_name)
+      )].sort();
+
+      models.forEach(model => {
+        const option = document.createElement('option');
+        option.value = model;
+        modelList.appendChild(option);
+      });
+
+      if (models.length > 0) modelInput.disabled = false;
+    });
+
+    // Search and display results
+    searchBtn.addEventListener('click', () => {
+      const brand = brandInput.value.toLowerCase();
+      const model = modelInput.value.toLowerCase();
+      const type = typeSelect.value.toLowerCase();
+      const battery = batterySelect.value;
+
+      const filtered = fullCatalog.filter(vehicle => {
+        return (
+          (!brand || vehicle.brand.toLowerCase().includes(brand)) &&
+          (!model || vehicle.model_name.toLowerCase().includes(model)) &&
+          (!type || vehicle.vehicle_type.toLowerCase() === type) &&
+          (!battery || vehicle.battery_capacity_kWh == battery)
+        );
+      });
+
+      if (!filtered.length) {
+        resultsDiv.innerHTML = `<p>No vehicles found.</p>`;
+        return;
+      }
+
+      resultsDiv.innerHTML = filtered.map(v => `
+        <div class="vehicle">
+          <h3>${v.brand} ${v.model_name}</h3>
+          <p>Type: ${v.vehicle_type} | Battery: ${v.battery_capacity_kWh} kWh | Range: ${v.range_per_charge_km} km</p>
+          <p>Charging Time: ${v.charging_time} | Price: ${v.price_range} | Year: ${v.launch_year} | Availability: ${v.availability}</p>
+        </div>
+      `).join('<hr>');
+    });
+
+    init();
+  </script>
+</body>
+</html>

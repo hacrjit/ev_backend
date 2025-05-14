@@ -4,13 +4,14 @@ from rest_framework import status, generics
 from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
 from .models import CustomUser
 from .utils import generate_otp, send_otp_email
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.utils.timezone import now
 import datetime
 from django.utils import timezone
 from datetime import timedelta
+
 
 class RegisterView(APIView):
     def post(self, request):
@@ -71,6 +72,8 @@ class ResendOTPView(APIView):
 
 
 class VerifyOTPView(APIView):
+    # allow any user to verify their email
+    permission_classes = [AllowAny]
     def post(self, request):
         email = request.data.get("email")
         otp = request.data.get("otp")
@@ -82,10 +85,11 @@ class VerifyOTPView(APIView):
                 user.save()
 
                 refresh = RefreshToken.for_user(user)
-                response = Response({"msg": "Email verified, logged in."})
-                response.set_cookie('access_token', str(refresh.access_token), httponly=True)
-                response.set_cookie('refresh_token', str(refresh), httponly=True)
-                return response
+                return Response({
+                    "msg": "Email verified, logged in.",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh)
+                }, status=status.HTTP_200_OK)
 
             return Response({"error": "Invalid OTP"}, status=400)
         except CustomUser.DoesNotExist:
@@ -97,17 +101,14 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            refresh_token = request.COOKIES.get('refresh_token')
+            refresh_token = request.data.get('refresh_token')
             if not refresh_token:
-                return Response({'error': 'Refresh token not found in cookies.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Refresh token not found.'}, status=status.HTTP_400_BAD_REQUEST)
 
             token = RefreshToken(refresh_token)
             token.blacklist()
 
-            response = Response({"message": "Logout successful."}, status=status.HTTP_205_RESET_CONTENT)
-            response.delete_cookie('access_token')
-            response.delete_cookie('refresh_token')
-            return response
+            return Response({"message": "Logout successful."}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -126,25 +127,11 @@ class UserUpdateView(generics.UpdateAPIView):
 
         # Auto-login: generate new tokens
         refresh = RefreshToken.for_user(instance)
-        access = refresh.access_token
-
-        response = Response({"msg": "Profile updated and user auto-logged in."})
-        response.set_cookie(
-            key='access_token',
-            value=str(access),
-            httponly=True,
-            samesite='Lax',
-            expires=now() + datetime.timedelta(minutes=30)
-        )
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            httponly=True,
-            samesite='Lax',
-            expires=now() + datetime.timedelta(days=1)
-        )
-
-        return response
+        return Response({
+            "msg": "Profile updated.",
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_200_OK)
 
     
 
@@ -154,59 +141,27 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
-            refresh = response.data.get("refresh")
-            access = response.data.get("access")
-
-            # Set cookies
-            response.set_cookie(
-                key='access_token',
-                value=access,
-                httponly=True,
-                samesite='Lax',
-                expires=now() + datetime.timedelta(minutes=30)
-            )
-            response.set_cookie(
-                key='refresh_token',
-                value=refresh,
-                httponly=True,
-                samesite='Lax',
-                expires=now() + datetime.timedelta(days=1)
-            )
-
+            return Response({
+                "access": response.data.get("access"),
+                "refresh": response.data.get("refresh")
+            }, status=status.HTTP_200_OK)
         return response
     
 class CustomTokenRefreshView(APIView):
     def post(self, request, *args, **kwargs):
-        refresh_token = request.COOKIES.get('refresh_token') or request.data.get('refresh')
+        refresh_token = request.data.get('refresh_token')
 
         if not refresh_token:
-            return Response({"error": "Refresh token missing in cookies"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
 
-            response = Response({"access": access_token}, status=status.HTTP_200_OK)
-
-            # Set new access token cookie
-            response.set_cookie(
-                key='access_token',
-                value=access_token,
-                httponly=True,
-                samesite='Lax',
-                expires=now() + datetime.timedelta(minutes=30)
-            )
-
-            # Optional: refresh cookie can also be renewed
-            response.set_cookie(
-                key='refresh_token',
-                value=refresh_token,
-                httponly=True,
-                samesite='Lax',
-                expires=now() + datetime.timedelta(days=1)
-            )
-
-            return response
+            return Response({
+                "access": access_token,
+                "refresh": str(refresh)
+            }, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)

@@ -1,6 +1,8 @@
 from rest_framework import viewsets, permissions
-from .models import Vehicle
-from .serializers import VehicleSerializer
+from .models import Vehicle, VehicleCatalog
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from .serializers import VehicleSerializer, VehicleCatalogSerializer
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,10 +13,19 @@ class VehicleViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Vehicle.objects.filter(user=self.request.user)
+        return Vehicle.objects.select_related('catalog').filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class VehicleCatalogViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = VehicleCatalog.objects.all()
+    serializer_class = VehicleCatalogSerializer
+    permission_classes = [permissions.AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['brand', 'model_name', 'vehicle_type', 'battery_capacity_kWh']
+    search_fields = ['brand', 'model_name']
         
 
 class VehicleInfoView(APIView):

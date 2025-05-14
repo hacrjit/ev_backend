@@ -1,0 +1,7 @@
+Manufacturer,Model,BodyType,BatteryCapacity_kWh,Range_km,ChargingTime,ChargingPort,MotorPosition,FastChargingSupport,RegenerativeBraking,PriceRange,Year,Availability
+Tata,Tiago EV,Hatchback,24.0,315,"3.6H (7.2 kW AC), 58 Min (25 kW DC)",CCS-II,Front,Yes,Yes,₹8.69L – ₹11.99L,2022,Available
+Tata,Tigor EV,Sedan,26.0,315,"9H 24Min (3.3 kW AC), 59 Min (18 kW DC)",CCS-II,Front,Yes,Yes,₹12.49L – ₹13.75L,2021,Available
+Tata,Nexon EV,SUV,46.08,489,"6H 36Min (7.2 kW AC), 40 Min (60 kW DC)",CCS-II,Front,Yes,Yes,₹14.49L – ₹19.49L,2020,Available
+Tata,Punch EV (25 kWh),SUV,25.0,315,"3.6H (3.3 kW AC), 56 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹9.99L – ₹13.79L,2024,Available
+Tata,Punch EV (35 kWh),SUV,35.0,421,"5H (7.2 kW AC), 56 Min (50 kW DC)",CCS-II,Front,Yes,Yes,₹12.69L – ₹13.79L,2024,Available
+Tata,Curvv EV,SUV,55.0,585,"7.9H (7.2 kW AC), 40 Min (70 kW DC)",CCS-II,Front,Yes,Yes,₹17.49L – ₹21.99L,2025,Upcoming
