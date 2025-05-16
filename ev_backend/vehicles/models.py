@@ -16,6 +16,9 @@ class VehicleCatalog(models.Model):
     price_range = models.CharField(max_length=100, null=True, blank=True)
     launch_year = models.IntegerField(null=True, blank=True)
     availability = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"{self.brand} {self.model_name}"
@@ -26,5 +29,12 @@ class Vehicle(models.Model):
     catalog = models.ForeignKey(VehicleCatalog, on_delete=models.SET_NULL, null=True, blank=True, related_name='user_vehicles')
     registration_number = models.CharField(max_length=20, unique=True)
 
+    # Add these for fallback if catalog is missing
+    custom_brand = models.CharField(max_length=100, null=True, blank=True)
+    custom_model = models.CharField(max_length=100, null=True, blank=True)
+
+
     def __str__(self):
-        return f"{self.catalog} ({self.registration_number})"
+        if self.catalog:
+            return f"{self.catalog} ({self.registration_number})"
+        return f"{self.custom_brand or 'Unknown'} {self.custom_model or ''} ({self.registration_number})"

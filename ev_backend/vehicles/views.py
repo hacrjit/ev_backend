@@ -15,46 +15,43 @@ class VehicleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Vehicle.objects.select_related('catalog').filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 class VehicleCatalogViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = VehicleCatalog.objects.all()
     serializer_class = VehicleCatalogSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['brand', 'model_name', 'vehicle_type', 'battery_capacity_kWh']
+    filterset_fields = ['brand', 'model_name', 'vehicle_type']
     search_fields = ['brand', 'model_name']
         
 
-class VehicleInfoView(APIView):
-    def post(self, request):
-        vehicle_no = request.data.get('vehicle_no')
+# class VehicleInfoView(APIView):
+#     def post(self, request):
+#         vehicle_no = request.data.get('vehicle_no')
         
-        if not vehicle_no:
-            return Response({"error": "Vehicle number is required."}, status=status.HTTP_400_BAD_REQUEST)
+#         if not vehicle_no:
+#             return Response({"error": "Vehicle number is required."}, status=status.HTTP_400_BAD_REQUEST)
         
-        url = "https://rto-vehicle-information-india.p.rapidapi.com/getVehicleInfo"
-        payload = {
-            "vehicle_no": vehicle_no,
-            "consent": "Y",
-            "consent_text": "I hereby give my consent for Eccentric Labs API to fetch my information"
-        }
-        headers = {
-            "x-rapidapi-key": "797a172c6emshf6e34e33e19b312p1ed147jsn2343b32adabc",
-            "x-rapidapi-host": "rto-vehicle-information-india.p.rapidapi.com",
-            "Content-Type": "application/json"
-        }
+#         url = "https://rto-vehicle-information-india.p.rapidapi.com/getVehicleInfo"
+#         payload = {
+#             "vehicle_no": vehicle_no,
+#             "consent": "Y",
+#             "consent_text": "I hereby give my consent for Eccentric Labs API to fetch my information"
+#         }
+#         headers = {
+#             "x-rapidapi-key": "797a172c6emshf6e34e33e19b312p1ed147jsn2343b32adabc",
+#             "x-rapidapi-host": "rto-vehicle-information-india.p.rapidapi.com",
+#             "Content-Type": "application/json"
+#         }
         
-        try:
-            response = requests.post(url, json=payload, headers=headers)
-            data = response.json()
+#         try:
+#             response = requests.post(url, json=payload, headers=headers)
+#             data = response.json()
 
-            if data.get("status") == True:
-                return Response(data.get("data"), status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Failed to fetch vehicle info."}, status=status.HTTP_400_BAD_REQUEST)
+#             if data.get("status") == True:
+#                 return Response(data.get("data"), status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"error": "Failed to fetch vehicle info."}, status=status.HTTP_400_BAD_REQUEST)
         
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
