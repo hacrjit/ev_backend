@@ -140,29 +140,29 @@ WSGI_APPLICATION = 'ev_backend.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'ev_db',
-        'USER': 'ev_user',
-        'PASSWORD': 'ev_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': 'postgres',
-#         'USER': 'postgres.couyjuetuzrsccgbyyrv',
-#         'PASSWORD': 'Qczy92k* av',
-#         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
-#         'PORT': '6543',
-#         'OPTIONS': {
-#             'options': '-c statement_timeout=60000',
-#         },
+#         'NAME': 'ev_db',
+#         'USER': 'ev_user',
+#         'PASSWORD': 'ev_password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'postgres',
+        'USER': 'postgres.couyjuetuzrsccgbyyrv',
+        'PASSWORD': 'Qczy92k* av',
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+        'PORT': '6543',
+        'OPTIONS': {
+            'options': '-c statement_timeout=60000',
+        },
+    }
+}
 
 
 
