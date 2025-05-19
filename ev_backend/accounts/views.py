@@ -85,6 +85,7 @@ class VerifyOTPView(APIView):
                 user.save()
 
                 refresh = RefreshToken.for_user(user)
+
                 return Response({
                     "msg": "Email verified, logged in.",
                     "access": str(refresh.access_token),
@@ -101,14 +102,15 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            refresh_token = request.data.get('refresh_token')
-            if not refresh_token:
+            refresh = request.data.get('refresh')
+            if not refresh:
                 return Response({'error': 'Refresh token not found.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            token = RefreshToken(refresh_token)
+            token = RefreshToken(refresh)
             token.blacklist()
 
-            return Response({"message": "Logout successful."}, status=status.HTTP_205_RESET_CONTENT)
+            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -129,7 +131,7 @@ class UserUpdateView(generics.UpdateAPIView):
         refresh = RefreshToken.for_user(instance)
         return Response({
             "msg": "Profile updated.",
-            "access": str(refresh.access_token),
+            "access": str(refresh.access),
             "refresh": str(refresh)
         }, status=status.HTTP_200_OK)
 
@@ -149,18 +151,18 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     
 class CustomTokenRefreshView(APIView):
     def post(self, request, *args, **kwargs):
-        refresh_token = request.data.get('refresh_token')
+        refresh = request.data.get('refresh')
 
-        if not refresh_token:
+        if not refresh:
             return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            refresh = RefreshToken(refresh_token)
-            access_token = str(refresh.access_token)
+            refresh = RefreshToken(refresh)
+            access = str(refresh.access_token)
 
             return Response({
-                "access": access_token,
-                "refresh": str(refresh)
+                "access": access,
+                # "refresh": str(refresh)
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -185,31 +187,95 @@ class ForgotPasswordView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
-class ResetPasswordView(APIView):
+
+
+class VerifyOTPForPasswordResetView(APIView):
     def post(self, request):
         email = request.data.get("email")
         otp = request.data.get("otp")
-        new_password = request.data.get("new_password")
-        verify_password = request.data.get("verify_password")
-        if new_password != verify_password:
-            return Response({"error": "New password and verify password do not match."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not all([email, otp, new_password]):
-            return Response({"error": "Email, OTP, and new password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not all([email, otp]):
+            return Response(
+                {"error": "Email and OTP are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             user = CustomUser.objects.get(email=email)
-
             if user.otp != otp:
-                return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Invalid OTP."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-            user.set_password(new_password)
-            user.otp = ""
-            user.save()
-            return Response({"message": "Password reset successful. You can now log in."}, status=status.HTTP_200_OK)
+            # Generate a short-lived token (e.g., 5-minute expiry)
+            reset_token = RefreshToken.for_user(user).access_token
+            reset_token.set_exp(lifetime=timedelta(minutes=5))
+
+            return Response({
+                "message": "OTP verified. Proceed to reset password.",
+                "reset_token": str(reset_token)
+            }, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+class ResetPasswordWithTokenView(APIView):
+    permission_classes = [IsAuthenticated]  # Token must be valid
+
+    def post(self, request):
+        new_password = request.data.get("new_password")
+        verify_password = request.data.get("verify_password")
+
+        if not all([new_password, verify_password]):
+            return Response(
+                {"error": "New password and confirmation are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_password != verify_password:
+            return Response(
+                {"error": "Passwords do not match."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = request.user
+        user.set_password(new_password)
+        user.otp = ""  # Clear OTP after successful reset
+        user.save()
+
+        return Response(
+            {"message": "Password reset successful."},
+            status=status.HTTP_200_OK
+        )
+# class ResetPasswordView(APIView):
+#     def post(self, request):
+#         email = request.data.get("email")
+#         otp = request.data.get("otp")
+#         new_password = request.data.get("new_password")
+#         verify_password = request.data.get("verify_password")
+#         if new_password != verify_password:
+#             return Response({"error": "New password and verify password do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         if not all([email, otp, new_password]):
+#             return Response({"error": "Email, OTP, and new password are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             user = CustomUser.objects.get(email=email)
+
+#             if user.otp != otp:
+#                 return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             user.set_password(new_password)
+#             user.otp = ""
+#             user.save()
+#             return Response({"message": "Password reset successful. You can now log in."}, status=status.HTTP_200_OK)
+
+#         except CustomUser.DoesNotExist:
+#             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ResendPasswordResetOTPView(APIView):

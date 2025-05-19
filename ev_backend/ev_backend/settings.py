@@ -68,16 +68,18 @@ INSTALLED_APPS = [
 
 
 INSTALLED_APPS += [
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.apple',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-]
-
+    ]
+SITE_ID = 1
+REST_USE_JWT = True
 
 AUTHENTICATION_BACKENDS = ['accounts.backends.EmailOrUsernameModelBackend']               # Custom authentication backend for email or username login
 
@@ -138,26 +140,29 @@ WSGI_APPLICATION = 'ev_backend.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': 'ev_db',
-#         'USER': 'ev_user',
-#         'PASSWORD': 'ev_password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'postgres',
-        'USER': 'postgres.couyjuetuzrsccgbyyrv',
-        'PASSWORD': 'Qczy92k* av',
-        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
-        'PORT': '6543',
+        'NAME': 'ev_db',
+        'USER': 'ev_user',
+        'PASSWORD': 'ev_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'postgres',
+#         'USER': 'postgres.couyjuetuzrsccgbyyrv',
+#         'PASSWORD': 'Qczy92k* av',
+#         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+#         'PORT': '6543',
+#         'OPTIONS': {
+#             'options': '-c statement_timeout=60000',
+#         },
+#     }
+# }
 
 
 
@@ -255,3 +260,6 @@ RAZORPAY_KEY_SECRET = 'Z5zl749WPLyPeqVSSCG4XrGo'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024  # 100 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024
+
+
+LOGIN_REDIRECT_URL = '/api/wallet'  # Redirect URL after login
